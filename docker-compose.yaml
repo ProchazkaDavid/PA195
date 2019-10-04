@@ -1,0 +1,80 @@
+version: "3"
+services:
+  redis-1:
+    container_name: redis-1
+    build:
+      context: .
+      args:
+        port: 7000
+    ports:
+      - "127.0.0.1:7000:7000"
+    networks:
+      redis-network:
+        ipv4_address: 192.168.0.2
+
+  redis-2:
+    container_name: redis-2
+    build:
+      context: .
+      args:
+        port: 7001
+    ports:
+      - "127.0.0.1:7001:7001"
+    networks:
+      redis-network:
+        ipv4_address: 192.168.0.3
+
+  redis-3:
+    container_name: redis-3
+    build:
+      context: .
+      args:
+        port: 7002
+    ports:
+      - "127.0.0.1:7002:7002"
+    networks:
+      redis-network:
+        ipv4_address: 192.168.0.4
+
+  redis-4:
+    container_name: redis-4
+    build:
+      context: .
+      args:
+        port: 7003
+    ports:
+      - "127.0.0.1:7003:7003"
+    networks:
+      redis-network:
+        ipv4_address: 192.168.0.5
+
+  redis-5:
+    container_name: redis-5
+    build:
+      context: .
+      args:
+        port: 7004
+    ports:
+      - "127.0.0.1:7004:7004"
+    networks:
+      redis-network:
+        ipv4_address: 192.168.0.6
+
+  redis-6:
+    container_name: redis-6
+    build:
+      context: .
+      args:
+        port: 7005
+    ports:
+      - "127.0.0.1:7005:7005"
+    networks:
+      redis-network:
+        ipv4_address: 192.168.0.7
+
+networks:
+  redis-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.0.0/24
