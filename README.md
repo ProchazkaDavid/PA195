@@ -66,10 +66,10 @@ docker-compose down
 
 ## Team
 
-|                                                   David Procházka                                                   |                                                  Josef Podaný                                                  | Matěj Tužil |
+|                                                   David Procházka                                                   |                                                  Josef Podaný                                                  |                                                   Matěj Tužil                                                 |
 | :-----------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------: | :---------: |
-| [![David Procházka](https://avatars3.githubusercontent.com/u/2158418?s=200&v=4)](https://github.com/ProchazkaDavid) | [![Josef Podaný](https://avatars1.githubusercontent.com/u/30719925?s=200&v=4)](https://github.com/josefpodany) |             |
-|                          [`github.com/ProchazkaDavid`](https://github.com/ProchazkaDavid)                           |                           [`github.com/josefpodany`](https://github.com/josefpodany)                           |             |
+| [![David Procházka](https://avatars3.githubusercontent.com/u/2158418?s=200&v=4)](https://github.com/ProchazkaDavid) | [![Josef Podaný](https://avatars1.githubusercontent.com/u/30719925?s=200&v=4)](https://github.com/josefpodany) | [![Matěj Tužil](https://avatars.githubusercontent.com/xtuzil)](https://github.com/xtuzil)            |
+|                          [`github.com/ProchazkaDavid`](https://github.com/ProchazkaDavid)                           |                           [`github.com/josefpodany`](https://github.com/josefpodany)                           |    [`github.com/xtuzil`](https://github.com/xtuzil)          |
 
 ---
 
