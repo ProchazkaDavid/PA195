@@ -4,8 +4,6 @@
     <div id="form">
       <form @submit="logIn">
         <input type="text" id="nickname" v-model="nickname" placeholder="nickname" />
-
-        <input type="password" id="password" v-model="password" placeholder="password" />
         <button type="submit">Log in</button>
       </form>
     </div>
@@ -24,8 +22,8 @@ export default {
       return this.$store.state.loggedIn;
     },
     logIn() {
-      if (this.nickname === "" || this.password === "") {
-        alert("nickname and password can not be empty!");
+      if (this.nickname === "") {
+        alert("The nickname can not be empty!");
       } else {
         this.$store.commit("LOG_IN", this.nickname);
       }
