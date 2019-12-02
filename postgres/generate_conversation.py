@@ -62,3 +62,4 @@ if __name__ == "__main__":
         senders=user_ids,
         no_of_messages=int(bash_args.get("no_of_messages", 10))
     )
+    db.close()

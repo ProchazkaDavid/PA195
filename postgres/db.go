@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"time"
 )
 
-func get_db_connection() *sql.DB {
+func getDBConnection() *sql.DB {
 	// Closing db instance left for caller. Call `defer db.Close()`
 	host := os.Getenv("PG_HOST")
 	port, _ := strconv.Atoi(os.Getenv("PG_PORT"))
@@ -21,4 +22,17 @@ func get_db_connection() *sql.DB {
 		panic(err)
 	}
 	return db
+}
+
+func insertMessage(db *sql.DB, message string, senderId int, channelId int) int {
+	insertStatement := `
+	INSERT INTO messages (sender, time_sent, channel, content)
+	VALUES ($1, $2, $3, $4)
+	RETURNING id`
+	id := 0
+	err := db.QueryRow(insertStatement, senderId, time.Now().UTC().String(), channelId, message).Scan(&id)
+	if err != nil {
+		panic(err)
+	}
+	return id
 }
