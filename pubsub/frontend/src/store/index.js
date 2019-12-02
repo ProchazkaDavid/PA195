@@ -47,9 +47,6 @@ export default new Vuex.Store({
           sender: data.sender,
           date: data.date
         });
-    },
-    ADD_ROOM(state, name) {
-      state.rooms.push({ name, messages: [] });
     }
   },
   getters: {
