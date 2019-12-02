@@ -1,4 +1,4 @@
-package websocket
+package main
 
 import (
 	"log"
@@ -14,7 +14,7 @@ var upgrader = websocket.Upgrader{
 }
 
 // Upgrade upgrades http connections to websocket ones
-func Upgrade(w http.ResponseWriter, r *http.Request) (*websocket.Conn, error) {
+func upgradeConnection(w http.ResponseWriter, r *http.Request) (*websocket.Conn, error) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)

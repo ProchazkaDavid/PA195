@@ -1,6 +1,8 @@
-package websocket
+package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // Pool represents connection pool for websockets
 type Pool struct {
@@ -11,7 +13,7 @@ type Pool struct {
 }
 
 // NewPool creates new pool
-func NewPool() *Pool {
+func newPool() *Pool {
 	return &Pool{
 		Register:   make(chan *Client),
 		Unregister: make(chan *Client),
@@ -21,30 +23,31 @@ func NewPool() *Pool {
 }
 
 // Start manages connection pool
-func (pool *Pool) Start() {
+func (pool *Pool) start() {
 	for {
 		select {
 		case client := <-pool.Register:
 			pool.Clients[client] = true
 			fmt.Println("Size of Connection Pool: ", len(pool.Clients))
 			for client := range pool.Clients {
-				fmt.Println(client)
-				client.Conn.WriteJSON(Message{Type: 1, Body: "New User Joined..."})
+				client.Conn.WriteJSON("Welcome")
 			}
 			break
 		case client := <-pool.Unregister:
 			delete(pool.Clients, client)
 			fmt.Println("Size of Connection Pool: ", len(pool.Clients))
 			for client := range pool.Clients {
-				client.Conn.WriteJSON(Message{Type: 1, Body: "User Disconnected..."})
+				client.Conn.WriteJSON("User disconnected")
 			}
 			break
 		case message := <-pool.Broadcast:
-			fmt.Println("Sending message to all clients in Pool")
+			fmt.Println("Sending message to other clients in pool")
 			for client := range pool.Clients {
-				if err := client.Conn.WriteJSON(message); err != nil {
-					fmt.Println(err)
-					return
+				if client.Sender != message.Sender {
+					if err := client.Conn.WriteJSON(message); err != nil {
+						fmt.Println(err)
+						return
+					}
 				}
 			}
 		}
