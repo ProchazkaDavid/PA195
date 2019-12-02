@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">Home</router-link>|
-      <router-link to="/rooms">Chat Rooms</router-link>|
+      <router-link to="/">Home</router-link>&nbsp;|
+      <router-link to="/rooms">Chat Rooms</router-link>&nbsp;|
       <router-link to="/login">Login</router-link>
       <span class="welcome" v-if="isLoggedIn()">&nbsp;Welcome, {{ getUser().nickname }}</span>
       <span class="welcome" v-else></span>

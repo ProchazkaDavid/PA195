@@ -1,6 +1,5 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import moment from "moment";
 
 Vue.use(Vuex);
 
@@ -10,53 +9,16 @@ export default new Vuex.Store({
     currentUser: undefined,
     rooms: [
       {
-        id: 1,
         name: "ChatRoom rawr xD",
-        messages: [
-          {
-            sender: "Pepsi",
-            text: "testovaci zprava",
-            date: moment().format("LT")
-          },
-          {
-            sender: "Pepsi",
-            text: "testovaci zprava",
-            date: moment().format("LT")
-          },
-          {
-            sender: "Pepsi",
-            text: "testovaci zprava",
-            date: moment().format("LT")
-          }
-        ]
+        messages: []
       },
       {
-        id: 2,
         name: "Anime club",
-        messages: [
-          {
-            sender: "Pepsi",
-            text: "testovaci zprava",
-            date: moment().format("LT")
-          },
-          {
-            sender: "Pepsi",
-            text: "testovaci zprava",
-            date: moment().format("LT")
-          }
-        ]
+        messages: []
       }
-    ],
-    users: [
-      { id: 1, nickname: "pepsi" },
-      { id: 2, nickname: "deiv191" }
     ]
   },
   mutations: {
-    SOCKET_CONNECT: (state, status) => {
-      console.log(status);
-      state.connect = true;
-    },
     LOG_IN(state, nickname) {
       state.currentUser = {
         id: 1000,
@@ -70,20 +32,21 @@ export default new Vuex.Store({
     },
     SEND_MSG(state, data) {
       state.rooms
-        .find(room => room.id === data.roomId)
+        .find(room => room.name === data.roomName)
         .messages.push({
           text: data.msg,
           sender: state.currentUser.nickname,
           date: data.date
         });
-    }
-  },
-  actions: {
-    logIn(context, user) {
-      context.commit("LOG_IN", user);
     },
-    logOut(context) {
-      context.commit("LOG_OUT");
+    ADD_MSG(state, data) {
+      state.rooms
+        .find(room => room.name === data.room)
+        .messages.push({
+          text: data.text,
+          sender: data.sender,
+          date: data.date
+        });
     }
   },
   getters: {
@@ -94,21 +57,20 @@ export default new Vuex.Store({
       return state.rooms;
     },
     chatRoomName: state => {
-      return roomId => state.rooms.find(room => room.id === roomId).name;
+      return roomName => state.rooms.find(room => room.name === roomName).name;
     },
     messages: state => {
-      return roomId => state.rooms.find(room => room.id === roomId).messages;
+      return roomName =>
+        state.rooms.find(room => room.name === roomName).messages;
     },
     chatRoomMembers: state => {
-      return roomId => [
+      return roomName => [
         ...new Set(
           state.rooms
-            .find(room => room.id === roomId)
+            .find(room => room.name === roomName)
             .messages.map(msg => msg.sender)
         )
       ];
     }
-  },
-  methods: {},
-  modules: {}
+  }
 });

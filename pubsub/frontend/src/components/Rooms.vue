@@ -2,11 +2,11 @@
   <div class="rooms">
     <h1>Here are all the available chat rooms:</h1>
     <ul id="rooms-list">
-      <li v-for="room in chatRooms" v-bind:key="room">
+      <li v-for="(room, i) in chatRooms" :key="`${i}-${room}`">
         <div class="room">
           <router-link
-            :to="{name: 'chat-room', params: {id: room.id}}"
-          >{{ room.name }} ({{ chatRoomMembers(room.id).length }} members)</router-link>
+            :to="{name: 'chat-room', params: {name: room.name}}"
+          >{{ room.name }} ({{ chatRoomMembers(room.name).length }} members)</router-link>
         </div>
       </li>
     </ul>
@@ -28,8 +28,8 @@ export default {
     }
   },
   methods: {
-    chatRoomMembers(roomId) {
-      return this.$store.getters.chatRoomMembers(roomId);
+    chatRoomMembers(roomName) {
+      return this.$store.getters.chatRoomMembers(roomName);
     }
   }
 };
