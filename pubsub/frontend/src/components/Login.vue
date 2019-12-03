@@ -16,6 +16,9 @@
 
 <script>
 export default {
+  beforeMount() {
+    this.nickname = "";
+  },
   name: "Login",
   methods: {
     isLoggedIn() {

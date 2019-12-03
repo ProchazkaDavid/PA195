@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import { socket } from "../main";
 
 Vue.use(Vuex);
 
@@ -7,23 +8,11 @@ export default new Vuex.Store({
   state: {
     loggedIn: false,
     currentUser: undefined,
-    rooms: [
-      {
-        name: "ChatRoom rawr xD",
-        messages: []
-      },
-      {
-        name: "Anime club",
-        messages: []
-      }
-    ]
+    rooms: []
   },
   mutations: {
     LOG_IN(state, nickname) {
-      state.currentUser = {
-        id: 1000,
-        nickname
-      };
+      state.currentUser = { nickname };
       state.loggedIn = true;
     },
     LOG_OUT: state => {
@@ -31,6 +20,15 @@ export default new Vuex.Store({
       state.currentUser = undefined;
     },
     SEND_MSG(state, data) {
+      socket.send(
+        JSON.stringify({
+          event: "send_msg",
+          room: data.roomName,
+          date: data.date,
+          sender: state.currentUser.nickname,
+          text: data.msg
+        })
+      );
       state.rooms
         .find(room => room.name === data.roomName)
         .messages.push({
@@ -47,6 +45,20 @@ export default new Vuex.Store({
           sender: data.sender,
           date: data.date
         });
+    },
+    ADD_ROOM(state, data) {
+      if (data.socket) {
+        socket.send(
+          JSON.stringify({
+            event: "create_room",
+            room: data.name
+          })
+        );
+      }
+      state.rooms.push({
+        name: data.name,
+        messages: data.messages
+      });
     }
   },
   getters: {

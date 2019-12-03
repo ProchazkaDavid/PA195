@@ -14,7 +14,7 @@
     <div class="input" v-if="isLoggedIn()">
       <form @submit="send">
         <input type="text" id="message" v-model="message" placeholder="write some cute msg" />
-        <button type="send">Send</button>
+        <button type="submit">Send</button>
       </form>
     </div>
   </div>
@@ -35,6 +35,9 @@ import moment from "moment";
 
 export default {
   name: "Chat-Room",
+  beforeMount() {
+    this.message = "";
+  },
   methods: {
     isLoggedIn() {
       return this.$store.state.loggedIn;
