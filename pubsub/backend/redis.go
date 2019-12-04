@@ -48,8 +48,77 @@ func subscribe(channel string, pool *Pool) {
 	}()
 }
 
+func fetchAll() ([]FetchRoom, error) {
+	var fRooms []FetchRoom
+
+	rooms, err := fetchRooms()
+	if err != nil {
+		return nil, err
+	}
+
+	messages, err := fetchMessages()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, r := range rooms {
+		fRooms = append(fRooms, FetchRoom{
+			Room: r.Room,
+			Msgs: []Msg{},
+		})
+	}
+
+	for _, m := range messages {
+		for i, fr := range fRooms {
+			if m.Room == fr.Room {
+				fRooms[i].Msgs = append(fr.Msgs, Msg{
+					Text:   m.Text,
+					Sender: m.Sender,
+					Date:   m.Date,
+				})
+			}
+		}
+	}
+
+	return fRooms, nil
+}
+
+func fetchMessages() ([]Message, error) {
+	var messages []Message
+
+	mess, err := client.LRange("messages", 0, -1).Result()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, m := range mess {
+		var message Message
+		message.UnmarshalBinary([]byte(m))
+		messages = append(messages, message)
+	}
+
+	return messages, nil
+}
+
+func fetchRooms() ([]Room, error) {
+	var rooms []Room
+
+	rms, err := client.LRange("rooms", 0, -1).Result()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, r := range rms {
+		var room Room
+		room.UnmarshalBinary([]byte(r))
+		rooms = append(rooms, room)
+	}
+
+	return rooms, nil
+}
+
 func (m Message) save() error {
-	if _, err := client.LPush("messages", m).Result(); err != nil {
+	if _, err := client.RPush("messages", m).Result(); err != nil {
 		return err
 	}
 
@@ -57,7 +126,7 @@ func (m Message) save() error {
 }
 
 func (r Room) save() error {
-	if _, err := client.LPush("rooms", r).Result(); err != nil {
+	if _, err := client.RPush("rooms", r).Result(); err != nil {
 		return err
 	}
 
