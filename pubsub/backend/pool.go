@@ -30,6 +30,7 @@ func (pool *Pool) start() {
 			pool.Clients[client] = true
 			fmt.Println("Size of Connection Pool: ", len(pool.Clients))
 			for client := range pool.Clients {
+				// here should be called FetchAll
 				client.Conn.WriteJSON("Welcome")
 			}
 			break

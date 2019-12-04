@@ -6,8 +6,8 @@ import store from "./store";
 export const socket = new WebSocket("ws://localhost:8080/ws");
 
 let connect = () => {
-  console.log("Socket: Attempting Connection...");
-  socket.onopen = () => console.log("Socket: Successfully Connected");
+  console.log("SOCKET: Attempting Connection...");
+  socket.onopen = () => console.log("SOCKET: Successfully Connected");
   socket.onmessage = msg => {
     const message = JSON.parse(msg.data);
     switch (message.event) {
@@ -31,12 +31,12 @@ let connect = () => {
         }
         break;
       default:
-        console.log(`SOCKET: unknown event ${message.event}`);
+        console.log(`SOCKET: unknown event (message: ${message})`);
     }
   };
   socket.onclose = event =>
-    console.log("Socket: Socket Closed Connection: ", event);
-  socket.onerror = error => console.log("Socket: Socket Error: ", error);
+    console.log("SOCKET: Socket Closed Connection: ", event);
+  socket.onerror = error => console.log("SOCKET: Socket Error: ", error);
 };
 
 Vue.config.productionTip = false;
