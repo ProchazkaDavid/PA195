@@ -56,33 +56,31 @@ func subscribe(channel string, pool *Pool) {
 func fetchAll() ([]FetchRoom, error) {
 	var fRooms []FetchRoom
 
-	rooms, err := fetchRooms()
-	if err != nil {
-		return nil, err
-	}
-
 	messages, err := fetchMessages()
 	if err != nil {
 		return nil, err
 	}
 
-	for _, r := range rooms {
-		fRooms = append(fRooms, FetchRoom{
-			Room: r.Room,
-			Msgs: []Msg{},
-		})
-	}
-
 	for _, m := range messages {
+		rInFRooms := -1
 		for i, fr := range fRooms {
-			if m.Room == fr.Room {
-				fRooms[i].Msgs = append(fr.Msgs, Msg{
-					Text:   m.Text,
-					Sender: m.Sender,
-					Date:   m.Date,
-				})
+			if fr.Room == m.Room {
+				rInFRooms = i
+				break
 			}
 		}
+		if rInFRooms == -1 {
+			fRooms = append(fRooms, FetchRoom{
+				Room: m.Room,
+				Msgs: []Msg{},
+			})
+			rInFRooms = len(fRooms) - 1
+		}
+		fRooms[rInFRooms].Msgs = append(fRooms[rInFRooms].Msgs, Msg{
+			Sender: m.Sender,
+			Date:   m.Date,
+			Text:   m.Text,
+		})
 	}
 
 	return fRooms, nil
@@ -101,7 +99,6 @@ func fetchMessages() ([]Message, error) {
 		message.UnmarshalBinary([]byte(m))
 		messages = append(messages, message)
 	}
-
 	return messages, nil
 }
 

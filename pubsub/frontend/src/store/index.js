@@ -65,6 +65,9 @@ export default new Vuex.Store({
         name: data.name,
         messages: data.messages
       });
+    },
+    FETCH_ALL(state, data) {
+      state.rooms = data;
     }
   },
   getters: {

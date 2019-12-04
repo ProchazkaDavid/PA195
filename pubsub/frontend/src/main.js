@@ -24,13 +24,7 @@ let connect = () => {
           store.commit("ADD_MSG", message);
           break;
         case "fetch_all":
-          for (const room of message.rooms) {
-            store.commit("ADD_ROOM", {
-              socket: false,
-              name: room.room,
-              messages: room.msgs
-            });
-          }
+          store.commit("FETCH_ALL", message);
           break;
         default:
           console.log(`SOCKET: unknown event (message: ${message})`);

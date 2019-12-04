@@ -24,8 +24,8 @@ type Room struct {
 
 // FetchRoom struct - []FetchRoom should be returned for the `fetch_all` event
 type FetchRoom struct {
-	Room string `json:"room"`
-	Msgs []Msg  `json:"msgs"`
+	Room string `json:"name"`
+	Msgs []Msg  `json:"messages"`
 }
 
 // Msg is modified Message - no Room field :(
