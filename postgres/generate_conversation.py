@@ -19,26 +19,8 @@ def get_db():
     return psycopg2.connect(conn_str)
 
 
-def generate_users(conn):
-    users = "INSERT INTO users (username, password) VALUES "
-    letters = string.ascii_lowercase
-
-    for i in range(3):
-        username = names.get_first_name()
-        password = ''.join(random.choice(letters) for _ in range(32))
-        users += f"('{username}', '{password}')"
-        users += ", " if i < 2 else ""
-    users += "RETURNING id"
-    cur = conn.cursor()
-    cur.execute(users)
-    conn.commit()
-    res = cur.fetchall()
-    cur.close()
-    return [r[0] for r in res]
-
-
-def generate_messages(conn, channel: int, senders: list, no_of_messages: int):
-    messages = "INSERT INTO messages (sender, time_sent, channel, content) VALUES "
+def generate_messages(conn, channel: str, senders: list, no_of_messages: int):
+    messages = "INSERT INTO messages (sender, date, room, text) VALUES "
     for i in range(no_of_messages):
         message = lorem.sentence()
         user = random.choice(senders)
@@ -55,11 +37,10 @@ if __name__ == "__main__":
     "Example of call: python3 generate_conversation.py channel=5 no_of_messages=100"
     bash_args = {s[0]: s[1] for s in [a.split('=') for a in sys.argv if '=' in a]}
     db = get_db()
-    user_ids = generate_users(conn=db)
     generate_messages(
         conn=db,
-        channel=int(bash_args.get("channel", 9)),
-        senders=user_ids,
+        channel=bash_args.get("channel", 9),
+        senders=["xxx", "yyy", "zzz"],
         no_of_messages=int(bash_args.get("no_of_messages", 10))
     )
     db.close()
