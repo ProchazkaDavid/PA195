@@ -123,7 +123,12 @@ func fetchRooms() ([]Room, error) {
 }
 
 func (m Message) save() error {
-	if _, err := client.RPush("messages", m).Result(); err != nil {
+	mess, err := m.MarshalBinary()
+	if err != nil {
+		return err
+	}
+
+	if _, err := client.RPush("messages", mess).Result(); err != nil {
 		return err
 	}
 
@@ -131,7 +136,12 @@ func (m Message) save() error {
 }
 
 func (r Room) save() error {
-	if _, err := client.RPush("rooms", r).Result(); err != nil {
+	room, err := r.MarshalBinary()
+	if err != nil {
+		return err
+	}
+
+	if _, err := client.RPush("rooms", room).Result(); err != nil {
 		return err
 	}
 
