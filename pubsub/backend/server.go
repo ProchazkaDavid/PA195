@@ -23,25 +23,15 @@ func serveWs(pool *Pool, w http.ResponseWriter, r *http.Request) {
 	client.listen()
 }
 
-func setupRoutes(pool *Pool) {
-	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		serveWs(pool, w, r)
-	})
-
-	http.HandleFunc("/getAll", func(w http.ResponseWriter, r *http.Request) {
-		// TODO: get rooms and messages from postgre to redis and then serve from redis
-		// var once sync.Once
-		// once.Do(func() {...})
-	})
-}
-
 func main() {
 	fmt.Println("Distributed Chat App v0.01")
 
 	pool := newPool()
 	go pool.start()
 
-	setupRoutes(pool)
+	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		serveWs(pool, w, r)
+	})
 
 	for _, ch := range channels {
 		subscribe(ch, pool)
