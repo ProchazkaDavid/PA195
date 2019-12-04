@@ -47,3 +47,19 @@ func subscribe(channel string, pool *Pool) {
 		}
 	}()
 }
+
+func (m Message) save() error {
+	if _, err := client.LPush("messages", m).Result(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r Room) save() error {
+	if _, err := client.LPush("rooms", r).Result(); err != nil {
+		return err
+	}
+
+	return nil
+}
