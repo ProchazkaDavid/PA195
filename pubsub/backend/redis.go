@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"time"
 
 	"github.com/go-redis/redis"
 )
@@ -53,12 +55,30 @@ func subscribe(channel string, pool *Pool) {
 	}()
 }
 
-func fetchAll() ([]FetchRoom, error) {
+func fetchAll(limit int) ([]FetchRoom, error) {
 	var fRooms []FetchRoom
 
+	// this call gets messages from redis
+	start := time.Now()
 	messages, err := fetchMessages()
 	if err != nil {
 		return nil, err
+	}
+
+	if len(messages) == 0 {
+		// data is not in redis, check postgres
+		fmt.Println("Redis is empty, looking into postgres...")
+		start = time.Now()
+		messages = RetrieveAllMessages(limit)
+		fmt.Printf("Got %d messages, saving them to redis...\n", len(messages))
+		t := time.Now()
+		fmt.Printf("It took %d milliseconds\n", t.Sub(start).Milliseconds())
+		for _, m := range messages {
+			m.save()
+		}
+	} else {
+		t := time.Now()
+		fmt.Printf("Found %d items in redis, it took %d milliseconds\n", len(messages), t.Sub(start).Milliseconds())
 	}
 
 	for _, m := range messages {

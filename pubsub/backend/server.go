@@ -24,7 +24,8 @@ func serveWs(pool *Pool, w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	fmt.Println("Distributed Chat App v0.01")
+	fmt.Println("Chat App backend is running on port 8080.")
+	fmt.Println("Use a command line argument to specify a limit for postgres.")
 
 	pool := newPool()
 	go pool.start()

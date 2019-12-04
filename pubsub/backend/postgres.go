@@ -29,7 +29,7 @@ func GetDBConnection() *sql.DB {
 // InsertMessage inserts a single Message struct to the database
 func InsertMessage(db *sql.DB, m *Message) int {
 	insertStatement := `
-	INSERT INTO messages2 (sender, date, room, text)
+	INSERT INTO messages (sender, date, room, text)
 	VALUES ($1, $2, $3, $4)
 	RETURNING id`
 	id := 0
@@ -45,7 +45,7 @@ func RetrieveAllMessages(limit int) []Message {
 	db := GetDBConnection()
 	defer db.Close()
 
-	statement, err := db.Prepare("SELECT * FROM messages2 LIMIT $1")
+	statement, err := db.Prepare("SELECT * FROM messages LIMIT $1")
 	if err != nil {
 		panic(err)
 	}
@@ -70,8 +70,6 @@ func RetrieveAllMessages(limit int) []Message {
 	if err != nil {
 		panic(err)
 	}
-
-	//fmt.Printf("%v", data)
 
 	return data
 
