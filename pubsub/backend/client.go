@@ -37,12 +37,8 @@ func (c *Client) listen() {
 		}
 
 		switch m["event"] {
-		case "create_room":
-			fmt.Printf("I should create a new room here! - room named %s\n", m["room"])
 		case "send_msg":
 			mess := Message{Sender: m["sender"], Text: m["text"], Date: m["date"], Room: m["room"]}
-			data, _ := mess.MarshalBinary()
-			fmt.Printf("marshalled: %s", data)
 			err := mess.save()
 			if err != nil {
 				panic(err)
