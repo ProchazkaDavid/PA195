@@ -8,7 +8,6 @@ import (
 var channels = []string{"test"}
 
 func serveWs(pool *Pool, w http.ResponseWriter, r *http.Request) {
-	fmt.Println("WebSocket Endpoint Hit")
 	conn, err := upgradeConnection(w, r)
 	if err != nil {
 		fmt.Fprintf(w, "%+v\n", err)

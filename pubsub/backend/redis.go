@@ -70,15 +70,15 @@ func fetchAll(limit int) ([]FetchRoom, error) {
 		fmt.Println("Redis is empty, looking into postgres...")
 		start = time.Now()
 		messages = RetrieveAllMessages(limit)
-		fmt.Printf("Got %d messages, saving them to redis...\n", len(messages))
+		fmt.Printf("Saving messages from postgres to redis...\n")
 		t := time.Now()
-		fmt.Printf("It took %d milliseconds\n", t.Sub(start).Milliseconds())
+		fmt.Printf("POSTGRES: %d items, %d milliseconds\n", len(messages), t.Sub(start).Milliseconds())
 		for _, m := range messages {
 			m.save()
 		}
 	} else {
 		t := time.Now()
-		fmt.Printf("Found %d items in redis, it took %d milliseconds\n", len(messages), t.Sub(start).Milliseconds())
+		fmt.Printf("REDIS: %d items, %d milliseconds\n", len(messages), t.Sub(start).Milliseconds())
 	}
 
 	for _, m := range messages {
