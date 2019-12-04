@@ -33,7 +33,12 @@ func (pool *Pool) start() {
 			if err != nil {
 				fmt.Println(err)
 			}
-			client.Conn.WriteJSON(fAll)
+
+			client.Conn.WriteJSON(Event{
+				Event:  "fetch_all",
+				Sender: "backend",
+				Data:   fAll,
+			})
 
 			fmt.Println("Size of Connection Pool: ", len(pool.Clients))
 			// for client := range pool.Clients {
