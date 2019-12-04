@@ -21,6 +21,7 @@ func (c *Client) listen() {
 		c.Pool.Unregister <- c
 		c.Conn.Close()
 	}()
+	db := GetDBConnection()
 
 	for {
 		_, p, err := c.Conn.ReadMessage()
@@ -39,7 +40,13 @@ func (c *Client) listen() {
 		case "create_room":
 			fmt.Printf("I should create a new room here! - room named %s\n", m["room"])
 		case "send_msg":
-			fmt.Printf("I should send out a new message! - %s from %s\n", m["text"], m["sender"])
+			mess := Message{Sender: m["sender"], Text: m["text"], Date: m["date"], Room: m["room"]}
+			InsertMessage(db, &mess)
+			c.Pool.Broadcast <- Event{
+				Event:  "send_msg",
+				Sender: mess.Sender,
+				Data:   mess,
+			}
 		default:
 			fmt.Printf("ERROR: JSON received in the websocket is either malformed or incorrect: %s\n", m)
 		}

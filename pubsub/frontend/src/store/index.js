@@ -38,13 +38,19 @@ export default new Vuex.Store({
         });
     },
     ADD_MSG(state, data) {
-      state.rooms
-        .find(room => room.name === data.room)
-        .messages.push({
-          text: data.text,
-          sender: data.sender,
-          date: data.date
-        });
+      if (!state.loggedIn || data.sender != state.currentUser.nickname) {
+        if (!(data.room in state.rooms.map(room => room.name))) {
+          state.rooms.push({ name: data.room, messages: [] });
+        }
+
+        state.rooms
+          .find(room => room.name === data.room)
+          .messages.push({
+            text: data.text,
+            sender: data.sender,
+            date: data.date
+          });
+      }
     },
     ADD_ROOM(state, data) {
       if (data.socket) {

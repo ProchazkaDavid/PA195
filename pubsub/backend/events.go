@@ -2,6 +2,13 @@ package main
 
 import "encoding/json"
 
+// Event struct - used for transmitting data through websocket
+type Event struct {
+	Event  string      `json:"event"`
+	Sender string      `json:"sender"`
+	Data   interface{} `json:"data"`
+}
+
 // Message struct - Message should be returned for the `send_msg` event
 type Message struct {
 	Sender string `json:"sender"`
