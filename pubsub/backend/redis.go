@@ -42,8 +42,13 @@ func subscribe(channel string, pool *Pool) {
 
 			var m Message
 			m.UnmarshalBinary([]byte(msg.Payload))
+			e := Event{
+				Event:  "send_msg",
+				Sender: m.Sender,
+				Data:   m,
+			}
 
-			pool.Broadcast <- m
+			pool.Broadcast <- e
 		}
 	}()
 }

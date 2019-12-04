@@ -9,7 +9,7 @@ type Pool struct {
 	Register   chan *Client
 	Unregister chan *Client
 	Clients    map[*Client]bool
-	Broadcast  chan Message
+	Broadcast  chan Event
 }
 
 // NewPool creates new pool
@@ -18,7 +18,7 @@ func newPool() *Pool {
 		Register:   make(chan *Client),
 		Unregister: make(chan *Client),
 		Clients:    make(map[*Client]bool),
-		Broadcast:  make(chan Message),
+		Broadcast:  make(chan Event),
 	}
 }
 
@@ -33,7 +33,6 @@ func (pool *Pool) start() {
 			if err != nil {
 				fmt.Println(err)
 			}
-
 			client.Conn.WriteJSON(fAll)
 
 			fmt.Println("Size of Connection Pool: ", len(pool.Clients))

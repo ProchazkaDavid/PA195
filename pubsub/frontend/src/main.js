@@ -9,29 +9,32 @@ let connect = () => {
   console.log("SOCKET: Attempting Connection...");
   socket.onopen = () => console.log("SOCKET: Successfully Connected");
   socket.onmessage = msg => {
-    const message = JSON.parse(msg.data);
-    switch (message.event) {
-      case "create_room":
-        store.commit("ADD_ROOM", {
-          socket: false,
-          name: message.room,
-          messages: []
-        });
-        break;
-      case "send_msg":
-        store.commit("ADD_MSG", message);
-        break;
-      case "fetch_all":
-        for (const room of message.rooms) {
+    const temp = JSON.parse(msg.data);
+    if (temp != undefined) {
+      const message = temp.data;
+      switch (temp.event) {
+        case "create_room":
           store.commit("ADD_ROOM", {
             socket: false,
-            name: room.room,
-            messages: room.msgs
+            name: message.room,
+            messages: []
           });
-        }
-        break;
-      default:
-        console.log(`SOCKET: unknown event (message: ${message})`);
+          break;
+        case "send_msg":
+          store.commit("ADD_MSG", message);
+          break;
+        case "fetch_all":
+          for (const room of message.rooms) {
+            store.commit("ADD_ROOM", {
+              socket: false,
+              name: room.room,
+              messages: room.msgs
+            });
+          }
+          break;
+        default:
+          console.log(`SOCKET: unknown event (message: ${message})`);
+      }
     }
   };
   socket.onclose = event =>
