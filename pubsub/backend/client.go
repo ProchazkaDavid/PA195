@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 
@@ -28,16 +29,22 @@ func (c *Client) listen() {
 			return
 		}
 
-		var msg Message
-		msg.UnmarshalBinary(p)
-
-		if c.Sender == "" {
-			c.Sender = msg.Sender
+		m := map[string]string{}
+		er := json.Unmarshal(p, &m)
+		if er != nil {
+			panic(er)
 		}
 
-		fmt.Printf("Message Received: %+v %s \n", msg, c.ID)
+		switch m["event"] {
+		case "create_room":
+			fmt.Printf("I should create a new room here! - room named %s\n", m["room"])
+		case "send_msg":
+			fmt.Printf("I should send out a new message! - %s from %s\n", m["text"], m["sender"])
+		default:
+			fmt.Printf("ERROR: JSON received in the websocket is either malformed or incorrect: %s\n", m)
+		}
 
-		publish(msg)
+		// publish(m)
 		// TODO: save message to redis
 		// TODO: save message to postgre
 	}
