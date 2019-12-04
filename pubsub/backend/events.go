@@ -41,3 +41,17 @@ func (m *Message) UnmarshalBinary(data []byte) error {
 
 	return nil
 }
+
+// MarshalBinary -
+func (r *Room) MarshalBinary() ([]byte, error) {
+	return json.Marshal(r)
+}
+
+// UnmarshalBinary -
+func (r *Room) UnmarshalBinary(data []byte) error {
+	if err := json.Unmarshal(data, &r); err != nil {
+		return err
+	}
+
+	return nil
+}
