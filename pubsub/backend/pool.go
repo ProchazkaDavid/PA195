@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"strconv"
 )
 
 // Pool represents connection pool for websockets
@@ -24,12 +26,16 @@ func newPool() *Pool {
 
 // Start manages connection pool
 func (pool *Pool) start() {
+	limit, err := strconv.Atoi(os.Args[1])
+	if err != nil {
+		panic(err)
+	}
 	for {
 		select {
 		case client := <-pool.Register:
 			pool.Clients[client] = true
 
-			fAll, err := fetchAll()
+			fAll, err := fetchAll(limit)
 			if err != nil {
 				fmt.Println(err)
 			}
