@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 
 	"github.com/gorilla/websocket"
@@ -21,7 +20,11 @@ func (c *Client) listen() {
 		c.Pool.Unregister <- c
 		c.Conn.Close()
 	}()
-	db := GetDBConnection()
+
+	db, err := GetDBConnection()
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	for {
 		_, p, err := c.Conn.ReadMessage()
@@ -38,18 +41,19 @@ func (c *Client) listen() {
 		switch m["event"] {
 		case "send_msg":
 			mess := Message{Sender: m["sender"], Text: m["text"], Date: m["date"], Room: m["room"]}
-			err := mess.save()
-			if err != nil {
+			if err := mess.save(); err != nil {
 				log.Fatalln(err)
 			}
+
 			InsertMessage(db, &mess)
+
 			c.Pool.Broadcast <- Event{
 				Event:  "send_msg",
 				Sender: mess.Sender,
 				Data:   mess,
 			}
 		default:
-			fmt.Printf("ERROR: JSON received in the websocket is either malformed or incorrect: %s\n", m)
+			log.Println("ERROR: JSON received in the websocket is either malformed or incorrect:", m)
 		}
 	}
 }

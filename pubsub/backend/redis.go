@@ -39,7 +39,10 @@ func fetchAll(limit int) ([]FetchRoom, error) {
 		// data is not in redis, check postgres
 		fmt.Println("Redis is empty, looking into postgres...")
 		start = time.Now()
-		messages = RetrieveAllMessages(limit)
+		messages, err = RetrieveAllMessages(limit)
+		if err != nil {
+			return nil, err
+		}
 		fmt.Printf("Saving messages from postgres to redis...\n")
 		t := time.Now()
 		fmt.Printf("POSTGRES: %d items, %d milliseconds\n", len(messages), t.Sub(start).Milliseconds())
