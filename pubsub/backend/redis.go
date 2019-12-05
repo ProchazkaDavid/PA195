@@ -2,18 +2,26 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"os"
+	"strconv"
 	"time"
 
 	"github.com/go-redis/redis"
 )
 
-var client *redis.Client
+var redisClient *redis.Client
 
 func init() {
-	client = redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "",
-		DB:       0,
+	db, err := strconv.Atoi(os.Getenv("REDIS_DATABASE"))
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	redisClient = redis.NewClient(&redis.Options{
+		Addr:     os.Getenv("REDIS_HOST"),
+		Password: os.Getenv("REDIS_PASSWORD"),
+		DB:       db,
 	})
 }
 
@@ -71,7 +79,7 @@ func fetchAll(limit int) ([]FetchRoom, error) {
 func fetchMessages() ([]Message, error) {
 	var messages []Message
 
-	mess, err := client.LRange("messages", 0, -1).Result()
+	mess, err := redisClient.LRange("messages", 0, -1).Result()
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +95,7 @@ func fetchMessages() ([]Message, error) {
 func fetchRooms() ([]Room, error) {
 	var rooms []Room
 
-	rms, err := client.LRange("rooms", 0, -1).Result()
+	rms, err := redisClient.LRange("rooms", 0, -1).Result()
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +115,7 @@ func (m Message) save() error {
 		return err
 	}
 
-	if _, err := client.RPush("messages", mess).Result(); err != nil {
+	if _, err := redisClient.RPush("messages", mess).Result(); err != nil {
 		return err
 	}
 
@@ -120,7 +128,7 @@ func (r Room) save() error {
 		return err
 	}
 
-	if _, err := client.RPush("rooms", room).Result(); err != nil {
+	if _, err := redisClient.RPush("rooms", room).Result(); err != nil {
 		return err
 	}
 
