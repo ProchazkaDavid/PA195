@@ -3,7 +3,7 @@
     <img alt="Vue logo" src="../assets/logo.png" />
     <div class="introduction">
       <p>
-        This is a demo app showcasing Redis' pub/sub capabilities.
+        This is a demo app showcasing Redis' caching capabilities.
         You can register, log in and join the chatrooms!
         Check out the implementation at
         <a
@@ -11,7 +11,6 @@
         >David's GitHub repository</a>.
       </p>
     </div>
-    <p>Put here some frickin' images of our stack...</p>
   </div>
 </template>
 
