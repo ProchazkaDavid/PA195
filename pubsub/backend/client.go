@@ -15,7 +15,7 @@ type Client struct {
 	Pool   *Pool
 }
 
-func (c *Client) listen() {
+func (c *Client) listen() error {
 	defer func() {
 		c.Pool.Unregister <- c
 		c.Conn.Close()
@@ -23,29 +23,30 @@ func (c *Client) listen() {
 
 	db, err := GetDBConnection()
 	if err != nil {
-		log.Fatalln(err)
+		return err
 	}
 
 	for {
 		_, p, err := c.Conn.ReadMessage()
 		if err != nil {
-			log.Println(err)
-			return
+			return err
 		}
 
 		m := map[string]string{}
 		if err := json.Unmarshal(p, &m); err != nil {
-			log.Fatalln(err)
+			return err
 		}
 
 		switch m["event"] {
 		case "send_msg":
 			mess := Message{Sender: m["sender"], Text: m["text"], Date: m["date"], Room: m["room"]}
 			if err := mess.save(); err != nil {
-				log.Fatalln(err)
+				return err
 			}
 
-			InsertMessage(db, &mess)
+			if err := InsertMessage(db, &mess); err != nil {
+				return err
+			}
 
 			c.Pool.Broadcast <- Event{
 				Event:  "send_msg",

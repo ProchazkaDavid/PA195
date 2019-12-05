@@ -14,10 +14,10 @@ var upgrader = websocket.Upgrader{
 	CheckOrigin:     func(r *http.Request) bool { return true },
 }
 
-func serveWs(pool *Pool, w http.ResponseWriter, r *http.Request) {
+func serveWs(pool *Pool, w http.ResponseWriter, r *http.Request) error {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Fatalln(err)
+		return err
 	}
 
 	client := &Client{
@@ -26,7 +26,7 @@ func serveWs(pool *Pool, w http.ResponseWriter, r *http.Request) {
 	}
 
 	pool.Register <- client
-	client.listen()
+	return client.listen()
 }
 
 func main() {
@@ -37,7 +37,9 @@ func main() {
 	go pool.start()
 
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		serveWs(pool, w, r)
+		if err := serveWs(pool, w, r); err != nil {
+			log.Fatalln(err)
+		}
 	})
 
 	http.ListenAndServe(":8080", nil)

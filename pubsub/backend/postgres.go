@@ -29,17 +29,17 @@ func GetDBConnection() (*sql.DB, error) {
 }
 
 // InsertMessage inserts a single Message struct to the database
-func InsertMessage(db *sql.DB, m *Message) (int, error) {
+func InsertMessage(db *sql.DB, m *Message) error {
 	insertStatement := `
 	INSERT INTO messages (sender, date, room, text)
 	VALUES ($1, $2, $3, $4)
 	RETURNING id`
-	id := 0
+	var id int
 	if err := db.QueryRow(insertStatement, m.Sender, m.Date, m.Room, m.Text).Scan(&id); err != nil {
-		return 0, err
+		return err
 	}
 
-	return id, nil
+	return nil
 }
 
 // RetrieveAllMessages returns all the messages in a database
