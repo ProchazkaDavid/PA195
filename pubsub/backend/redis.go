@@ -28,7 +28,6 @@ func init() {
 func fetchAll(limit int) ([]FetchRoom, error) {
 	var fRooms []FetchRoom
 
-	// this call gets messages from redis
 	start := time.Now()
 	messages, err := fetchMessages()
 	if err != nil {
@@ -36,18 +35,22 @@ func fetchAll(limit int) ([]FetchRoom, error) {
 	}
 
 	if len(messages) == 0 {
-		// data is not in redis, check postgres
 		fmt.Println("Redis is empty, looking into postgres...")
+
 		start = time.Now()
 		messages, err = RetrieveAllMessages(limit)
 		if err != nil {
 			return nil, err
 		}
-		fmt.Printf("Saving messages from postgres to redis...\n")
 		t := time.Now()
+
+		fmt.Println("Saving messages from postgres to redis...")
 		fmt.Printf("POSTGRES: %d items, %d milliseconds\n", len(messages), t.Sub(start).Milliseconds())
+
 		for _, m := range messages {
-			m.save()
+			if err := m.save(); err != nil {
+				return nil, err
+			}
 		}
 	} else {
 		t := time.Now()

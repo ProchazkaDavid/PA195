@@ -6,8 +6,8 @@
 # Install packages
 go get ./...
 
-# Compile & run backend
-go build && ./backend
+# Compile & run backend and load 50 messages from PostgreSQL
+go build && ./backend 50
 ```
 
 ## Env

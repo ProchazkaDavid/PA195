@@ -31,6 +31,7 @@ func (pool *Pool) start() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
 	for {
 		select {
 		case client := <-pool.Register:
@@ -38,7 +39,7 @@ func (pool *Pool) start() {
 
 			fAll, err := fetchAll(limit)
 			if err != nil {
-				fmt.Println(err)
+				log.Println(err)
 			}
 
 			client.Conn.WriteJSON(Event{
@@ -58,7 +59,6 @@ func (pool *Pool) start() {
 			for client := range pool.Clients {
 				if client.Sender != message.Sender {
 					if err := client.Conn.WriteJSON(message); err != nil {
-						fmt.Println(err)
 						return
 					}
 				}
