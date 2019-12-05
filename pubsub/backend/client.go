@@ -31,9 +31,8 @@ func (c *Client) listen() {
 		}
 
 		m := map[string]string{}
-		er := json.Unmarshal(p, &m)
-		if er != nil {
-			panic(er)
+		if err := json.Unmarshal(p, &m); err != nil {
+			log.Fatalln(err)
 		}
 
 		switch m["event"] {
@@ -41,7 +40,7 @@ func (c *Client) listen() {
 			mess := Message{Sender: m["sender"], Text: m["text"], Date: m["date"], Room: m["room"]}
 			err := mess.save()
 			if err != nil {
-				panic(err)
+				log.Fatalln(err)
 			}
 			InsertMessage(db, &mess)
 			c.Pool.Broadcast <- Event{

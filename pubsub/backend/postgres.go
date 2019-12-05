@@ -3,25 +3,25 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 
 	_ "github.com/lib/pq"
 )
 
-// GetDBConnection establishes connection with the database
+// GetDBConnection establishes connection with the database.
+// Closing db instance left for caller. Call `defer db.Close()`
 func GetDBConnection() *sql.DB {
-	// Closing db instance left for caller. Call `defer db.Close()`
 	host := os.Getenv("PG_HOST")
 	port, _ := strconv.Atoi(os.Getenv("PG_PORT"))
 	user := os.Getenv("PG_USER")
 	password := os.Getenv("PG_PASSWORD")
 	dbname := os.Getenv("PG_DATABASE")
-	psqlInfo := fmt.Sprintf(
-		"host=%s port=%d user=%s "+"password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
-		panic(err)
+		log.Fatalln(err)
 	}
 	return db
 }
@@ -35,7 +35,7 @@ func InsertMessage(db *sql.DB, m *Message) int {
 	id := 0
 	err := db.QueryRow(insertStatement, m.Sender, m.Date, m.Room, m.Text).Scan(&id)
 	if err != nil {
-		panic(err)
+		log.Fatalln(err)
 	}
 	return id
 }
@@ -47,14 +47,14 @@ func RetrieveAllMessages(limit int) []Message {
 
 	statement, err := db.Prepare("SELECT * FROM messages LIMIT $1")
 	if err != nil {
-		panic(err)
+		log.Fatalln(err)
 	}
 
 	var data []Message
 
 	rows, err := statement.Query(limit)
 	if err != nil {
-		panic(err)
+		log.Fatalln(err)
 	}
 	defer rows.Close()
 
@@ -62,13 +62,13 @@ func RetrieveAllMessages(limit int) []Message {
 		var m Message
 		var id string
 		if err := rows.Scan(&id, &m.Sender, &m.Date, &m.Room, &m.Text); err != nil {
-			panic(err)
+			log.Fatalln(err)
 		}
 		data = append(data, m)
 	}
 	err = rows.Err()
 	if err != nil {
-		panic(err)
+		log.Fatalln(err)
 	}
 
 	return data

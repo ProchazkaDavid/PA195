@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 )
@@ -28,7 +29,7 @@ func newPool() *Pool {
 func (pool *Pool) start() {
 	limit, err := strconv.Atoi(os.Args[1])
 	if err != nil {
-		panic(err)
+		log.Fatalln(err)
 	}
 	for {
 		select {
