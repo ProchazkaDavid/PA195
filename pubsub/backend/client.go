@@ -52,9 +52,5 @@ func (c *Client) listen() {
 		default:
 			fmt.Printf("ERROR: JSON received in the websocket is either malformed or incorrect: %s\n", m)
 		}
-
-		// publish(m)
-		// TODO: save message to redis
-		// TODO: save message to postgre
 	}
 }

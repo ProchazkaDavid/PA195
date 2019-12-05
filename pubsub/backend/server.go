@@ -5,8 +5,6 @@ import (
 	"net/http"
 )
 
-var channels = []string{"test"}
-
 func serveWs(pool *Pool, w http.ResponseWriter, r *http.Request) {
 	conn, err := upgradeConnection(w, r)
 	if err != nil {
@@ -32,10 +30,6 @@ func main() {
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		serveWs(pool, w, r)
 	})
-
-	for _, ch := range channels {
-		subscribe(ch, pool)
-	}
 
 	http.ListenAndServe(":8080", nil)
 }
