@@ -59,6 +59,8 @@ func fetchAll(limit int) ([]FetchRoom, error) {
 
 	for _, m := range messages {
 		rInFRooms := -1
+
+		// look if room is already in fRooms
 		for i, fr := range fRooms {
 			if fr.Room == m.Room {
 				rInFRooms = i
@@ -66,12 +68,15 @@ func fetchAll(limit int) ([]FetchRoom, error) {
 			}
 		}
 		if rInFRooms == -1 {
+			// room is not in fRooms, add it there
 			fRooms = append(fRooms, FetchRoom{
 				Room: m.Room,
 				Msgs: []Msg{},
 			})
 			rInFRooms = len(fRooms) - 1
 		}
+
+		// add message to the room
 		fRooms[rInFRooms].Msgs = append(fRooms[rInFRooms].Msgs, Msg{
 			Sender: m.Sender,
 			Date:   m.Date,
