@@ -1,5 +1,8 @@
 # PA195 NoSQL Databases - Redis
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/ProchazkaDavid/pa195)](https://goreportcard.com/report/github.com/ProchazkaDavid/pa195)
+![GitHub](https://img.shields.io/github/license/ProchazkaDavid/pa195)
+
 > [NoSQL Databases, Fall 2019 – Group Projects](http://disa.fi.muni.cz/vlastislav-dohnal/teaching/nosql-databases-fall-2019/group-projects/)
 
 ## Running a single instance
